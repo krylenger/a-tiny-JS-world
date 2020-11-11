@@ -1,93 +1,140 @@
-/* Refer to https://github.com/OleksiyRudenko/a-tiny-JS-world for the task details
-   Complete the below for code reviewers' convenience:
-
-   Code repository: _put repo URL here_
-   Web app: _put project's github pages URL here_
-   */
-
-// ======== OBJECTS DEFINITIONS ========
-// Define your objects here
+/* Refer to https://github.com/OleksiyRudenko/a-tiny-JS-world for the task details */
 
 const dog = {
     type: "animal",
     legs: 4,
     hands: 0,
-    name: "Sharik",
     gender: "male",
     friends: ["Anna", "Eugene"],
-    say: () => {
-      return "woof woof woof!";
-    },
   },
   cat = {
     type: "animal",
     legs: 4,
     hands: 0,
-    name: "Murzik",
     gender: "female",
     friends: ["Anna", "Eugene"],
-    say: () => {
-      return "Mrrrrr...";
-    },
   },
   woman = {
     type: "human",
     legs: 2,
     hands: 2,
-    name: "Anna",
     gender: "female",
     friends: ["Eugene", "Murzik", "Sharik"],
-    say: () => {
-      return "Nice to meet you!";
-    },
   },
   man = {
     type: "human",
     legs: 2,
     hands: 2,
-    name: "Eugene",
     gender: "male",
     friends: ["Anna", "Murzik", "Sharik"],
-    say: () => {
-      return "Nice to meet you!";
-    },
   },
   catWoman = {
     type: "cat-woman",
     legs: 2,
     hands: 2,
-    name: "Gerda",
     gender: "female",
     friends: ["Anna", "Murzik"],
-    say: cat.say
   };
 
-const inhabitants = [man, woman, cat, dog, catWoman];
-
-const introduction = ({
+const introduceSelf = ({
   type,
   name,
   gender,
   legs,
   hands,
   friends,
-  say,
 }) => `Hi! My name is <em>${name}</em> and I'm <em>${type}</em>. 
-My gender is <em>${gender}</em>. I have <em>${legs}</em> legs and <em>${hands}</em> hands. 
-These are my friends: <em>${friends.join(", ")}</em>.<em> 
-${say()}</em><br><br>`;
+    My gender is <em>${gender}</em>. I have <em>${legs}</em> legs and <em>${hands}</em> hands. 
+    These are my friends: <em>${friends.join(", ")}</em>.<em> 
+    </em><br><br>`;
 
-// ======== OUTPUT ========
-/* Use print(message) for output.
-   Default tag for message is <pre>. Use print(message,'div') to change containing element tag.
+const inhabitantSays = (self) => ({
+  introduction: () => {
+    return introduceSelf(self);
+  },
+});
 
-   Message can contain HTML markup. You may also tweak index.html and/or styles.css.
-   However, please, REFRAIN from improving visuals at least until your code is reviewed
-   so code reviewers might focus on a single file that is index.js.
-   */
+const createInhabitant = ({ type, legs, hands, gender, friends }) => {
+  let self = {
+    type,
+    legs,
+    hands,
+    gender,
+    friends,
+  };
+  return Object.assign(self, inhabitantSays(self));
+};
 
-//  Print examples:
+const catSays = (self) => ({
+  introduction: () => {
+    return `Meow! Meow meow <em>${self.name}</em> meow meow <em>${
+      self.type
+    }</em>. 
+      meow meow <em>${self.gender}</em>. meow <em>${self.legs}</em> meow <em>${
+      self.hands
+    }</em> meow. 
+      Meow meow meow: <em>${self.friends.join(", ")}</em>.<em> 
+      </em><br><br>`;
+  },
+});
 
-inhabitants.forEach((inhabitant) => {
-  print(introduction(inhabitant), "pre");
+const dogSays = (self) => ({
+  introduction: () => {
+    return `Woof! Woof woof <em>${self.name}</em> woof woof <em>${
+      self.type
+    }</em>. 
+      woof woof <em>${self.gender}</em>. woof <em>${self.legs}</em> woof <em>${
+      self.hands
+    }</em> woof. 
+      Woof woof woof: <em>${self.friends.join(", ")}</em>.<em> 
+      </em><br><br>`;
+  },
+});
+
+const createCat = (name) => {
+  const self = createInhabitant(cat);
+  self.name = name;
+  return Object.assign(self, catSays(self));
+};
+
+const createDog = (name) => {
+  const self = createInhabitant(dog);
+  self.name = name;
+  return Object.assign(self, dogSays(self));
+};
+
+const createMan = (name) => {
+  const self = createInhabitant(man);
+  self.name = name;
+  return Object.assign(self);
+};
+
+const createWoman = (name) => {
+  const self = createInhabitant(woman);
+  self.name = name;
+  return Object.assign(self);
+};
+
+const createCatWoman = (name) => {
+  const self = createInhabitant(catWoman);
+  self.name = name;
+  return Object.assign(self, catSays(self));
+};
+
+const dogSharik = createDog("Sharik");
+const catBarsik = createCat("Barsik");
+const manEugene = createMan("Eugene");
+const womanAnna = createWoman("Anna");
+const catWomanSofia = createCatWoman("Sofia");
+
+const introductions = [
+  manEugene.introduction(),
+  womanAnna.introduction(),
+  catBarsik.introduction(),
+  catWomanSofia.introduction(),
+  dogSharik.introduction(),
+];
+
+introductions.forEach((introduction) => {
+  print(introduction, "pre");
 });
